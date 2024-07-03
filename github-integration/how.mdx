@@ -1,0 +1,15 @@
+# Syncing with GitHub
+
+Holocron's integration with GitHub provides a seamless two-way sync, ensuring that your documentation stays up to date and synchronized between Holocron and your GitHub repository. This sync process is automatic and occurs at regular intervals, with a commit generated every minute, complete with an automatic commit message.
+
+## How the Sync Works
+
+When you connect your GitHub repository to Holocron, the sync process begins. Here's an overview of how the sync works:
+
+1. **Automatic Commit Generation**: Holocron automatically generates a commit every minute, capturing the changes made to your documentation. Each commit comes with an automatic commit message, providing a summary of the changes.
+
+2. **Content Synchronization**: Holocron compares the changes made in the editor with the current state of your GitHub repository. It identifies additions, modifications, and deletions in the documentation content.
+
+3. **Synchronization Direction**: The sync process ensures that changes made in either Holocron or the GitHub repository are reflected in both places. If you make updates in Holocron, they are pushed to the GitHub repository, and vice versa.
+
+4. **Conflict Resolution**: In case of conflicts, where changes are made in both Holocron and the GitHub repository simultaneously, Holocron provides conflict resolution mechanisms. You can review and manually resolve conflicts to ensure a smooth sync.

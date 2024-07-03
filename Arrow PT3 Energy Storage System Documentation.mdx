@@ -1,0 +1,574 @@
+# Arrow PT3 Energy Storage System Documentation
+
+## Table of Contents
+
+ 1. [System Requirements](#system-requirements)
+ 2. [System/Component Overview](#systemcomponent-overview)
+ 3. [Interfaces](#interfaces)
+ 4. [Bill of Materials](#bill-of-materials)
+ 5. [Mechanical Description](#mechanical-description)
+ 6. [Electrical Power Supply Architecture](#electrical-power-supply-architecture)
+ 7. [Performance Characteristics](#performance-characteristics)
+ 8. [Mode of Operations](#mode-of-operations)
+ 9. [Installation Requirements/Consideration](#installation-requirementsconsideration)
+10. [Safety Features](#safety-features-if-available)
+11. [Harness Requirements/Connectors](#harness-requirementsconnectors)
+12. [System Reliability](#system-reliability)
+13. [System/Unit Test & Validation](#systemunit-test-validation)
+
+---
+
+## System Requirements
+
+_Content goes here_
+
+## System/Component Overview
+
+The PT3 Energy Storage System utilises a general layout of 6 independent batteries. Each battery is powering one of the six Motors and ESCs. Each batterie is also supplying power into the low voltage system. The main reason behind this layout is system redundancy. In case one of the batteries fails, the aircraft is still able to operate and land safely.
+
+![General System Layout](https://holocron.so/uploads/768e200d-system-overview-1.png)
+
+The battery cells have the greatest influence on the performance of the energy storage system. Each PT3 main battery consists of 120 cylindrical 21700 cells. The key data points of the whole system can be seen below:
+
+| Specification                 | Value                          |
+| ----------------------------- | ------------------------------ |
+| Voltage (V)                   | 88.8V (24S)                    |
+| Total capacity (Ah)           | 135Ah (6X 22.5Ah)              |
+| Total capacity (kWh)          | 11.664 kWh (6X 1.944 kWh)      |
+| Continuous discharge current  | 1350A (6X 225A) (80°C cut-off) |
+| Total weight                  | 72kg (6X 12kg)                 |
+| System energy density (Wh/kg) | 162 Wh/kg                      |
+
+Datasheet of the MOLICEL INR-21700-P45B batterie cell that is used in the energy storage system (Battery configuration: 5P24S):
+
+![Batteries Datasheet](https://holocron.so/uploads/90eaf6d3-inr21700p45b-1.2-product-data-sheet-of-inr-21700-p45b-80109.png)
+
+The structure of the batteries can be divided into 3 main groups:
+
+1. **Cell pack**:
+   - 120X MOLICEL INR-21700-P45B cells that are orientated in a 5P24S configuration
+   - The battery cells are enclosed by a 3D printed cell holder (Material used: PETG-CF)
+   - Laser cut copper and stainless steel sheet metal parts are used as cell connectors. They are nickel plated after the laser cutting and then spot welded on top of the battery cells.
+
+![Cell pack](https://holocron.so/uploads/750b3578-cell.png)
+
+2. **Battery PCBs**:
+
+   Several PCBs are mounted in the battery pack:
+   - ENNOID XLITE V4 BMS for the battery managment
+   - Arduino MKR 1010 to add customized functions such as extended contactor control and contactor feedback
+   - Battery power PCB for the power distribution and power conversion inside the battery pack
+   - Battery signal PCB for connecting the signals to the wiring harness outside of the battery pack
+   - Two Flexible PCBs for the cell voltage connections and cell temperatures
+
+![Battery PCBs](https://holocron.so/uploads/8ba5b5e9-pcbs.png)
+
+3. **Housing of the battery**
+
+   The housing of the battery starts with two mica sheets on top of the sheet metal cell connectors (top and bottom). The mica sheets are electrically isolating and also used to increase fire protection. The main top and bottom parts in the PT3 batteries are 5mm cfk sheets with a honeycomb infill. They are lightweight and stiff. The sides are protected by bended aluminum sheets with a thickness of 2mm. The front and back of a battery pack is closed with 3D printed lids made of PETG-CF.
+
+![Battery Housing](https://holocron.so/uploads/2a976858-case.png)
+
+## Interfaces
+
+### Can bus Interface
+
+Two digital CAN bus interfaces are utilized in each battery. One CAN bus interface on the BMS and one on the Arduino MKR 1010.
+
+- **CAN bus Interface on the BMS**:
+
+  - This interface is responsible for data output related to the battery cells.
+  - It provides detailed information including:
+    - Cells voltages
+    - Overall battery voltage
+    - Temperatures
+    - State of Charge (SOC)
+    - State of Health (SOH)
+    - Charging current
+    - Charging voltage
+    - Operating state
+
+- **CAN bus Interface on the Arduino**:
+
+  - This interface is primarily used for mode of operation control.
+  - It controls the contactor and precharging functions.
+  - It mainly receives commands from the flight controller.
+
+## Bill of Materials
+
+Overall bill of materials (PCBs as one component):
+
+| Pos. | Description | Part Number | Qty 1 Battery |
+| ---- | ----------- | ----------- | ------------- |
+|      |             |             |               |
+|      |             |             |               |
+
+Bill of materials battery power PCB (components):
+
+| Pos. | Name                    | Description                                                                            | Designator | Part Number                | Qty 1 PCB |
+| ---- | ----------------------- | -------------------------------------------------------------------------------------- | ---------- | -------------------------- | --------- |
+| 1    | 47uF/10V                | 47uF ± 10% 10V                                                                         | C1, C2     | GRT31CR61A476KE13L         | 2         |
+| 2    | NO FIT                  | DC high voltage EV relay                                                               | CON1       | EVD150                     | 1         |
+| 3    | AMX-300                 | Automotive Fuses AMX Fuse, 300 A, 125Vdc, 30 mm, Std Pack                              | F1         | AMX-300                    | 1         |
+| 4    | 3403.0170.11            | Schurter 2.5A T Surface Mount Fuse, 125 V dc, 250 V ac                                 | F2, F4     | 3403.0170.24               | 2         |
+| 5    | 3403.0176.11            | Schurter 2.5A T Surface Mount Fuse, 125 V dc, 250 V ac                                 | F3         | 3403.0176.24               | 1         |
+| 6    | 7461383                 | Terminals WP-SHFU Pin-Plate 16Pin M5 Shank 180A                                        | J1, J2     | 7461383                    | 2         |
+| 7    | NO FIT                  | Busbar Positive Terminal_1                                                             | J3         | Sheet metal part           | 1         |
+| 8    | NO FIT                  | Busbar Positive Terminal_2                                                             | J4         | Sheet metal part           | 1         |
+| 9    | NO FIT                  | Busbar Positive Terminal_3                                                             | J5         | Sheet metal part           | 1         |
+| 10   | Molex Socket 2119370002 | Heavy Duty Power Connectors PowerWize HC 6mm HDR M DR 2CKT KEY A RD                    | J6         | 211937-0002                | 1         |
+| 11   | Molex Connector         | Heavy Duty Power Connectors PowerWize HC 6mm Connector Housing                         | -          | 211942-0002                | 1         |
+| 12   | Molex Crimp             | Heavy Duty Power Connectors PowerWize HC 6mm Crimp Contact                             | -          | 204608-0006 or 204608-4006 | 2         |
+| 13   | NO FIT                  | Busbar Negative Terminal_2                                                             | J7         | Sheet metal part           | 1         |
+| 14   | 282834-4                | Fixed Terminal Blocks 4P SIDE ENTRY 2.54mm                                             | J8         | 282834-4                   | 1         |
+| 15   | NO FIT                  | Busbar Negative Terminal_1                                                             | J9         | Sheet metal part           | 1         |
+| 16   | AYC5F2010               | 125C heat resistance, Connectors for board-to-FPC, Receptacle, 20 pins                 | J10, J12   | AYC5F2010                  | 2         |
+| 17   | ESQT-112-03-F-S-310     | Headers & Wire Housings FleXYZ Flexible-Height Socket Strip, 2.00mm Pitch              | J11        | ESQT-112-03-F-S-310        | 1         |
+| 18   | XT30UPB-F               | XT30 vertical PCB connector                                                            | J13        | XT30UPB-F                  | 1         |
+| 19   | SSW-114-01-T-S          | Headers & Wire Housings Tiger Buy Socket Strip with PCB Tails, .100\\ Pitch            | J14, J15   | SSW-114-01-T-S             | 2         |
+| 20   | ESQT-102-03-F-S-310     | Headers & Wire Housings FleXYZ Flexible-Height Socket Strip, 2.00mm Pitch              | J16, J19   | ESQT-102-03-F-S-310        | 2         |
+| 21   | ESQT-114-03-F-S-310     | Headers & Wire Housings FleXYZ Flexible-Height Socket Strip, 2.00mm Pitch              | J17        | ESQT-114-03-F-S-310        | 1         |
+| 22   | ZW-03-12-T-D-620-100    | Board to Board & Mezzanine Connectors Flexible Board Stacking Header, 0.100\\ Pitch    | J18        | DW-03-12-S-D-620           | 1         |
+| 23   | CPC1718J                | 100V Single-Pole, Normally Open DC-Only Power Relay   Source:  Datasheet               | K1         | CPC1718J                   | 1         |
+| 24   | CPC1916Y                | Solid State Relays - PCB Mount 100V Single Pole SIP Power Relay                        | K2, K3     | CPC1916Y                   | 2         |
+| 25   | RED                     | Standard LEDs - SMD Super Red, 645nm 180mcd, 20mA                                      | LED1       | 720-LST676-Q1R2-1-Z        | 1         |
+| 26   | NO FIT                  | Arduino MKR WiFi 1010                                                                  | M1         | ABX00023                   | 1         |
+| 27   | NO FIT                  | ENNOID-BMS XLITE V4                                                                    | M2         | Order from Ennoid.me       | 1         |
+| 28   | TMU_3-1211              | 3 Watt DC/DC converter, industrial, +/-10% SIP-4                                       | PS1        | TMU 3-1211                 | 1         |
+| 29   | RSDW20H-12              | Isolated DC/DC Converters 20W 43-160Vin 12V 1670mA 2x1 DIP Iso                         | PS2        | RSDW20H-12                 | 1         |
+| 30   | FMMT555TA               | Diodes Inc FMMT555TA PNP Bipolar Transistor, -1 A, -150 V, 3-Pin SOT-23                | Q1         | FMMT555TA                  | 1         |
+| 31   | PWR163S-25-50R0F        | Res Thick Film 50 Ohm 1% 25W +/-100ppm/C Epoxy D-Pak Gull Wing SMD                     | R1, R2, R3 | PWR163S-25-50R0F           | 3         |
+| 32   | 220                     | 220 Ohms ±1% 0.125W                                                                    | R4, R5, R9 | RC0805FR-07220RL           | 3         |
+| 33   | 1M                      | 1 MOhms ±1% 0.125W                                                                     | R6, R10    | RC0805FR-071ML             | 2         |
+| 34   | 75K                     | 75 kOhms ±1% 0.125W                                                                    | R7, R11    | RC0805FR-0775KL            | 2         |
+| 35   | 680R                    | 0.1W/ 680ohm±1%                                                                        | R8         | RC0603FR-07680RL           | 1         |
+| 36   | SLW-913535-2A-SMT       | Slide Switches 9.1 x 3.5 x 3.5 mm, 2 mm Raised Slide Actuator, Vertical, Surface Mount | S1         | SLW-913535-2A-SMT          | 1         |
+
+Bill of materials battery signal PCB (components):
+
+| Pos. | Name                  | Description                                                                            | Designator     | Part Number             | Qty 1 PCB |
+| ---- | --------------------- | -------------------------------------------------------------------------------------- | -------------- | ----------------------- | --------- |
+| 1    | 100nF                 | 100nF ± 10% 50V                                                                        | C1, C2, C3     | CC0805KRX7R9BB104       | 3         |
+| 2    | 8pF                   | 8pF ± 10% 50V                                                                          | C4, C5         | CC0603JRNPO9BN8R0       | 2         |
+| 3    | PESD0603-240          | LITTELFUSE - PESD0603-240 - ESD SUPPRESSOR, 0603, 24V, 0.25PF                          | D1, D2         | PESD0603-240            | 2         |
+| 4    | XT30UPB-M             | XT30 vertical PCB adapter                                                              | J1             | XT30UPB-M               | 1         |
+| 5    | TSW-114-14-T-S        | Headers & Wire Housings Classic PCB Header Strips, 0.100\\ pitch"                      | J2, J3         | TSW-114-14-T-S          | 2         |
+| 6    | SSW-103-01-T-D        | Headers & Wire Housings Tiger Buy Socket Strip with PCB Tails, .100\\ Pitch"           | J4             | SSW-103-01-T-D          | 1         |
+| 7    | ESQT-103-03-F-S-310   | 3 Position Elevated Socket Connector 0.079 (2.00mm) Through Hole Gold                  | J5             | ESQT-103-03-F-S-310     | 1         |
+| 8    | ESQT-104-03-F-S-310   | CONN SOCKET 4POS 0.079 GOLD PCB                                                        | J6             | ESQT-104-03-F-S-310     | 1         |
+| 9    | ESQT-106-03-F-S-310   | 6 Position Elevated Socket Connector 0.079 (2.00mm) Through Hole Gold                  | J7             | ESQT-106-03-F-S-310     | 1         |
+| 10   | AT04-12PB-BM04        | Automotive Connectors AT RCPT 12P (Ni) PCB BRD MNT POTING BK                           | J8             | AT04-12PB-BM04          | 1         |
+| 11   | AT06 Connector 12 Pos | AT06 Connector 12 Pos                                                                  | -              | AT06-12SB               | 1         |
+| 12   | AT Retention Wedge 12 | AT Retention Wedge 12 Pos                                                              | -              | AW12S                   | 1         |
+| 13   | AT04-08PB-BM04        | AMPHENOL SINE/TUCHEL - AT04-08PB-BM04 - RECTANGULAR CONN, RCPT, 8POS, PCB, BLACK       | J9             | AT04-08PB-BM04          | 1         |
+| 14   | AT06 Connector 8 Pos  | AT06 Connector 8 Pos                                                                   | -              | AT06-08SB               | 1         |
+| 15   | AT Retention Wedge 8  | AT Retention Wedge 8 Pos                                                               | -              | AW8S                    | 1         |
+| 16   | AT04-2P-BM04          | Conn Power RCP 2 POS 5.4mm Solder ST Thru-Hole 2 Terminal 1 Port                       | J10            | AT04-2P-BM04            | 1         |
+| 17   | AT06 Connector 2 Pos  | AT06 Connector 2 Pos                                                                   | -              | AT06-2S-ORG             | 1         |
+| 18   | AT Retention Wedge    | AT Retention Wedge 2 Pos                                                               | -              | AW2S                    | 1         |
+| 19   | AT Crimp              | Crimp contacts for AT connectors 20-16 AWG                                             | -              | AT62-201-16141          | 22        |
+| 20   | 10K                   | 10 kOhms ±1% 0.125W                                                                    | R1, R3, R4, R5 | RC0805FR-0710KL         | 4         |
+| 21   | 120                   | 120 Ohms ±1% 0.125W                                                                    | R2             | RC0805FR-07120RL        | 1         |
+| 22   | TL3305BF260QG         | Tactile Switch SPST-NO Top Actuated Surface Mount                                      | S1             | TL3305BF260QG           | 1         |
+| 23   | SLW-913535-2A-SMT     | Slide Switches 9.1 x 3.5 x 3.5 mm, 2 mm Raised Slide Actuator, Vertical, Surface Mount | S2             | SLW-913535-2A-SMT       | 1         |
+| 24   | TJA1049T/3J           | CAN transceiver                                                                        | U1             | TJA1049T/3J             | 1         |
+| 25   | MCP2515-I/SO          | CANbus Controller CAN 2.0 SPI Interface 18-SOIC                                        | U2             | MCP2515-I/SO            | 1         |
+| 26   | 8MHz                  | A small surface-mount type crystal unit, ideal for an engine control CPU clock         | X1             | NX3225GD-8MHZ-STD-CRA-3 | 1         |
+
+Bill of materials battery flexible PCB (components):
+
+| Pos. | Name            | Description                                                    | Designator | Part Number     | Qty 1 PCB |
+| ---- | --------------- | -------------------------------------------------------------- | ---------- | --------------- | --------- |
+| 1    | AYC6F2010       | FFC & FPC Connectors 1A 50VDC 800VAC 20-pin Header 29.8mm      | J1         | AYC6F2010       | 1         |
+| 2    | NCP21WF104J03RA | NTC (Negative Temperature Coefficient) Thermistors 100K OHM 5% | R1         | NCP21WF104J03RA | 1         |
+
+## Mechanical Description
+
+This section describes the layout of the battery from the inside out:
+
+1. **Cell Placement**:
+
+   - The battery cells are positioned between the top and bottom cell holders, which are 3D printed to ensure precise alignment and secure placement.
+
+2. **Cell Connectors**:
+
+   - The sheet metal cell connectors are spot welded onto the battery cells, providing a reliable and robust electrical connection.
+
+3. **Flexible Cell Voltage PCBs**:
+
+   - Two flexible cell voltage PCBs are attached to the left and right sides of the 3D printed cell housing. These PCBs are crucial for monitoring the cell voltages and ensuring the battery operates safely and efficiently.
+
+4. **Electrical Insulation**:
+
+   - For electrical insulation, a mica sheet is added to the cell-facing side of the outer battery housing, both at the top and bottom. In the prototypes, a 5mm carbon fiber sheet with honeycomb infill was used for structural support, and the mica sheet, with a thickness of 0.2mm, provided the necessary insulation.
+
+5. **Battery Power PCB**:
+
+   - The battery power PCB is mounted with screws at the front of the battery. It directly connects to the sheet metal cell connectors via busbars, which are soldered onto the PCB, forming the positive and negative battery terminals.
+
+6. **Mounting of BMS and Arduino**:
+
+   - The Xlite BMS and the Arduino MKR 1010 are mounted on the battery power PCB using distance screw adapters to ensure proper spacing and secure attachment.
+
+7. **Battery Signal PCB**:
+
+   - Positioned on top of the Xlite BMS and Arduino, the battery signal PCB is mounted. It features connectors that face outside the battery box, creating a three-layer PCB sandwich connected through pin headers and sockets.
+
+8. **Protective Aluminum Plates**:
+
+   - Bent aluminum plates are added to the left and right sides of the battery, protecting the flexible PCBs and providing mounting holes for securing the entire battery assembly.
+
+9. **3D Printed Lids**:
+
+   - The final components are the 3D printed lids, attached at the front and back of the battery. The front lid features holes for the connectors, while the back lid covers the exposed copper sheet metal of the cell connectors.
+
+## Electrical Power Supply Architecture
+
+- Power Supply for 12V and 5V with DCDCs. Powering the arduino, the contactor and SSRs. Also used to give enable sigal to the Xlite BMS.
+- HV output path to the main output power connector and also the HV path to the charging connector.
+
+## Performance Characteristics
+
+### Test Data Analysis
+
+- **Full Thrust Stand Run**:
+  - A comprehensive test needs to be conducted to evaluate the performance of the battery system under full thrust conditions over a longer period of time. A short testrun was already successfully done with a short time at 100% throttle.
+  - The test needs to involve running the system from 0% to 100% thrust and also running at hover thrust for a few minutes.
+  - Key parameters that need to be measured during the test:
+    - **Voltage Level**: Monitoring the voltage drop across the battery cells to assess their performance under load.
+    - **Power Output**: Recording the power output to determine the efficiency and capability of the system.
+    - **Temperatures**: Measuring the temperatures of the battery cells and other critical components to ensure thermal stability and safety.
+  - The results will provide valuable insights into the system's behavior under maximum operational stress, highlighting areas of efficiency and potential improvement.
+
+### Theoretical Performance
+
+- **Component Selection and Performance Prediction**:
+  - A detailed list of theoretical performance metrics based on the selected components is provided.
+  - This includes:
+    - **Discharge Diagram of Battery Cell**:
+      - The discharge characteristics of the battery cell are illustrated, showing how the voltage level changes with respect to the discharge rate.
+      - The diagram highlights the maximum discharge rate of the battery cell, providing a clear picture of its capabilities under various load conditions.
+    - **Maximum Discharge Rate**:
+      - The theoretical maximum discharge rate is specified, indicating the peak current the battery can safely deliver.
+      - This data is crucial for understanding the limits of the battery system and ensuring it meets the operational demands.
+  - These theoretical values serve as a benchmark for evaluating the actual test results and verifying the performance of the battery system.
+
+    ![Discharge Diagram](path/to/your/image.jpg)
+
+
+## Mode of Operations
+
+### Operational States
+
+- **Off State**:
+
+  - The system is completely powered down, with no active processes or functions. The DCDC converter and BMS are using a tiny amount of energy during the off state.
+  - All control signals are inactive ecept the ones that are directly comping from the flight controler and just pass through the battery signal PCB.
+
+- **Battery Enabled (Toggle Switch)**:
+
+  - **Precharging**:
+    - When the battery is enabled and the "armed" command is received, the system enters the precharging phase.
+    - This phase ensures that the voltage across the contactor is equalized before it is closed, protecting the contactor and the capacitors on the ESC side from high inrush currents.
+  - **Armed (Contactor Enabled)**:
+    - After precharging, the contactor is enabled, allowing current to flow through the main circuit.
+    - This state indicates that the system is ready for normal operation.
+  - **Charging (Includes Balancing)**:
+    - During charging, the system not only charges the battery but also balances the cells to ensure they all have the same voltage.
+    - Charging can occour in "armed" and "disarmed" state.
+
+### Battery Code for Arduino MKR 1010 (May 16)
+
+The following code is designed to manage the battery operations using an Arduino MKR 1010 and the Arduino IoT Cloud platform.
+
+#### Description of the Code
+
+1. **Variable Definitions**:
+
+   - `contactor_control`: A boolean variable to control the contactor state.
+   - `precharge_control`: A boolean variable to control the precharging state.
+
+2. **Setup Function**:
+
+   - Initializes the serial communication and waits for the port to open.
+   - Calls `initProperties()` to set up the IoT Cloud properties.
+   - Connects to the Arduino IoT Cloud.
+   - Configures the debug message level.
+   - Sets the pin modes for the LEDs and control pins (contactor and precharge).
+
+3. **Loop Function**:
+
+   - Regularly updates the Arduino Cloud.
+   - Contains sample code to manipulate the LED states for debugging purposes.
+
+4. **Contactor Control Change Handler** (`onContactorControlChange`):
+
+   - When `contactor_control` is enabled:
+     - Activates the precharge control and waits for 5 seconds.
+     - Enables the contactor and deactivates the precharge control after a short delay.
+   - When `contactor_control` is disabled:
+     - Deactivates both the precharge and contactor controls.
+
+5. **Precharge Control Change Handler** (`onPrechargeControlChange`):
+
+   - Sets the precharge pin based on the `precharge_control` state.
+
+#### Arduino Sketch
+
+```clike
+/* 
+  Sketch generated by the Arduino IoT Cloud Thing "Untitled"
+  https://create.arduino.cc/cloud/things/...
+
+  Arduino IoT Cloud Variables description
+
+  The following variables are automatically generated and updated when changes are made to the Thing
+
+  bool contactor_control;
+  bool precharge_control;
+
+  Variables which are marked as READ/WRITE in the Cloud Thing will also have functions
+  which are called when their values are changed from the Dashboard.
+  These functions are generated with the Thing and added at the end of this sketch.
+*/
+
+#include "thingProperties.h"
+#include "WiFiNINA.h"
+#include "utility/wifi_drv.h"
+#include <Servo.h>
+
+int contactor_pin = 2;
+int precharge_pin = 1;
+
+void setup() {
+  // Initialize serial and wait for port to open:
+  Serial.begin(9600);
+  // This delay gives the chance to wait for a Serial Monitor without blocking if none is found
+  delay(1500); 
+
+  // Defined in thingProperties.h
+  initProperties();
+
+  // Connect to Arduino IoT Cloud
+  ArduinoCloud.begin(ArduinoIoTPreferredConnection);
+  
+  /*
+     The following function allows you to obtain more information
+     related to the state of network and IoT Cloud connection and errors
+     the higher number the more granular information you’ll get.
+     The default is 0 (only errors).
+     Maximum is 4
+ */
+  setDebugMessageLevel(2);
+  ArduinoCloud.printDebugInfo();
+  
+  WiFiDrv::pinMode(25, OUTPUT); //define GREEN LED
+  WiFiDrv::pinMode(26, OUTPUT); //define RED LED
+  WiFiDrv::pinMode(27, OUTPUT); //define BLUE LED
+  
+  pinMode(contactor_pin, OUTPUT);
+  digitalWrite(contactor_pin, LOW);
+  
+  pinMode(precharge_pin, OUTPUT);
+  digitalWrite(precharge_pin, LOW);
+}
+
+void loop() {
+  ArduinoCloud.update();
+  // Your code here 
+  WiFiDrv::analogWrite(25, 155); //GREEN
+  delay(100);
+  WiFiDrv::analogWrite(26, 155);   //RED
+  delay(100);
+  WiFiDrv::analogWrite(27, 155);   //BLUE
+  delay(100);
+  WiFiDrv::analogWrite(25, 0); //GREEN
+  delay(100);
+  WiFiDrv::analogWrite(26, 0);   //RED
+  delay(100);
+  WiFiDrv::analogWrite(27, 0);   //BLUE
+  delay(100);
+  
+}
+
+void onContactorControlChange() {
+  if (contactor_control) {
+    // Start precharge when contactor control is enabled
+    digitalWrite(precharge_pin, HIGH); // Turn on precharge
+    delay(5000); // Wait for 5 seconds to complete precharge
+    // Close the contactor
+    digitalWrite(contactor_pin, HIGH);
+    delay(500); // Wait for the contactor to close
+    digitalWrite(precharge_pin, LOW); // Turn off precharge
+  } 
+  else {
+    // Turn off both precharge and contactor if contactor control is disabled
+    digitalWrite(precharge_pin, LOW); 
+    digitalWrite(contactor_pin, LOW);
+  }
+}
+
+void onPrechargeControlChange() {
+  digitalWrite(precharge_pin, precharge_control ? HIGH : LOW);
+}
+```
+
+thingProperties.h
+
+```clike
+// Code generated by Arduino IoT Cloud, DO NOT EDIT.
+
+#include <ArduinoIoTCloud.h>
+#include <Arduino_ConnectionHandler.h>
+
+const char SSID[]     = SECRET_SSID;    // Network SSID (name)
+const char PASS[]     = SECRET_OPTIONAL_PASS;    // Network password (use for WPA, or use as key for WEP)
+
+void onContactorControlChange();
+void onPrechargeControlChange();
+
+bool contactor_control;
+bool precharge_control;
+
+void initProperties(){
+
+  ArduinoCloud.addProperty(contactor_control, READWRITE, ON_CHANGE, onContactorControlChange);
+  ArduinoCloud.addProperty(precharge_control, READWRITE, ON_CHANGE, onPrechargeControlChange);
+
+}
+
+WiFiConnectionHandler ArduinoIoTPreferredConnection(SSID, PASS);
+```
+
+## Installation Requirements/Considerations
+
+### Mounting Orientation
+
+- **Mounting Holes**:
+  - The mounting orientation has no effect on the performance of the battery pack.
+  - Mounting holes are provided exclusively on the bent aluminum sides of the battery pack, designed to facilitate secure attachment to the mounting surface.
+  - This design allows for flexibility in mounting positions while maintaining the structural integrity of the battery pack.
+
+    ![Mounting Holes](path/to/your/image.jpg)
+
+
+### Wiring Space
+
+- **Connector Sockets**:
+  - Sufficient space should be allocated in front of the connector sockets to accommodate wiring.
+  - This ensures that all connections can be made without bending or stressing the cables, which could lead to connection failures or reduced performance.
+  - Proper planning for wiring space is crucial for maintaining clean and efficient installation.
+
+    ![Wiring Space](path/to/your/image.jpg)
+
+
+### Airflow Considerations
+
+- **Cooling Requirements**:
+  - More in-depth tests need to be carried out to assess the required cooling options.
+
+    ![Airflow Considerations](path/to/your/image.jpg)
+
+
+### Environmental Protection
+
+- **Water and Crash Protection**:
+  - The installation space should offer protection against environmental hazards, particularly water ingress.
+  - Additionally, the mounting should ensure structural safety in the event of a crash, protecting the batteries from being punctured or damaged.
+  - Proper shielding and robust installation practices are essential to safeguard the battery pack from potential damage, ensuring reliable and safe operation.
+
+    ![Environmental Protection](path/to/your/image.jpg)
+
+
+By adhering to these installation requirements and considerations, you can ensure that the battery pack is securely mounted, efficiently cooled, and protected from environmental hazards and potential impacts.
+
+## Safety Features
+
+### Short Circuit Protection
+
+- **350A Fuse**:
+
+  - A high-capacity 350A fuse is integrated into the system to provide robust protection against short circuits.
+  - This fuse ensures that any excessive current flow, which could potentially damage the battery or associated electronics, is quickly interrupted.
+
+    ![350A Fuse](path/to/your/image.jpg)
+
+
+- **Additional Fuses**:
+
+  - Additional fuses are installed specifically for the charging circuits and the power supply to the signal distribution PCB.
+  - These fuses are designed to protect the system against overcurrent conditions that might arise during the charging process or within the power supply network.
+
+    ![Additional Fuses](path/to/your/image.jpg)
+
+
+### Main Power Control
+
+- **Contactor**:
+  - A contactor is employed to control the main power output, providing an effective means to switch the power on and off as needed.
+  - This contactor allows for the main power output to be safely disconnected, especially in emergency situations or when maintenance is required.
+
+    ![Contactor](path/to/your/image.jpg)
+
+
+These safety features collectively ensure that the battery system is well-protected against common electrical hazards, thereby enhancing its reliability and safety during operation.
+
+## Harness Requirements/Connectors
+
+- //Add List of connectors and pinout
+- //Discribe shielded cable and use for can and emv
+- //HV cables awg size
+
+## System Reliability
+
+- //Cell cycle life
+- //Temperature ratings of components
+- //Survived first crash without obvious faults
+- //Long therm durability still needs to be tested
+
+## System/Unit Test & Validation
+
+### Multimeter Tests
+
+- **Battery Precharging and Contactor Switching**:
+
+  - To validate the precharging and contactor switching functionalities, use a multimeter to measure the voltage at the main power output connector.
+  - This measurement should be taken after activating the armed state of the battery. A successful test will show the expected voltage level, confirming that the battery is precharging correctly and the contactor is switching as intended.
+
+    ![Multimeter Test](path/to/your/image.jpg)
+
+
+- **Insulation Test**:
+
+  - Perform an insulation test between the aluminum sides of the battery housing and the high-voltage (HV) terminals (both positive and negative).
+  - This test ensures there is no electrical continuity, indicating proper insulation and preventing potential short circuits or leakage currents.
+
+    ![Insulation Test](path/to/your/image.jpg)
+
+
+### Thrust Stand Performance Validation
+
+- **Full Performance Validation**:
+  - Conduct a test on a thrust stand to validate the battery's performance under full operational conditions.
+  - Key aspects to monitor during this test include:
+    - **Cell Voltage Consistency**:
+      - Ensure that all cell voltages remain similar throughout the test, indicating balanced performance and no significant deviations among individual cells.
+    - **Temperature Monitoring**:
+      - Verify that the temperature sensors are reporting normal temperature levels. Abnormal readings may indicate potential issues with the battery cells or cooling system.
+    - **Thermal Camera Inspection**:
+      - After completing the thrust stand test, use a thermal camera to inspect the battery pack for any hotspots or irregular temperature distributions. This helps in identifying potential thermal issues.
+
+        ![Thrust Stand Test](path/to/your/image.jpg)
+
+
+### Charging Test
+
+- **Full Charging Cycle**:
+  - Perform a charging test from empty to full charge to ensure the battery is capable of taking in the required energy.
+  - This test involves monitoring the charging process to confirm that the battery charges efficiently and reaches its full capacity without any issues.
+  - The results should indicate that the battery is still performing optimally and able to handle the charging requirements.
+
+    ![Charging Test](path/to/your/image.jpg)
+
+
+By conducting these tests and validations, you can ensure that the battery system meets the necessary performance and safety standards, providing reliable and efficient operation in various conditions.

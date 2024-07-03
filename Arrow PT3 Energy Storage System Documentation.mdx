@@ -98,10 +98,22 @@ Two digital CAN bus interfaces are utilized in each battery. One CAN bus interfa
 
 Overall bill of materials (PCBs as one component):
 
-| Pos. | Description | Part Number | Qty 1 Battery |
-| ---- | ----------- | ----------- | ------------- |
-|      |             |             |               |
-|      |             |             |               |
+| Pos. | Description                 | Part Number            | Qty 1 Battery |
+| ---- | --------------------------- | ---------------------- | ------------- |
+| 1    | 21700 Battery Cell          | MOLICEL INR-21700-P45B | 120           |
+| 2    | Bottom 3D print cell holder | PRINT_BTM_HOLDER       | 1             |
+| 3    | Top 3D print cell holder    | PRINT_TOP_HOLDER       | 1             |
+| 4    |                             |                        |               |
+| 5    |                             |                        |               |
+| 6    |                             |                        |               |
+| 7    |                             |                        |               |
+| 8    |                             |                        |               |
+| 9    |                             |                        |               |
+| 10   |                             |                        |               |
+| 11   |                             |                        |               |
+| 12   |                             |                        |               |
+| 13   |                             |                        |               |
+| 14   |                             |                        |               |
 
 Bill of materials battery power PCB (components):
 
@@ -225,6 +237,7 @@ This section describes the layout of the battery from the inside out:
 ## Electrical Power Supply Architecture
 
 - Power Supply for 12V and 5V with DCDCs. Powering the arduino, the contactor and SSRs. Also used to give enable sigal to the Xlite BMS.
+- 
 - HV output path to the main output power connector and also the HV path to the charging connector.
 
 ## Performance Characteristics

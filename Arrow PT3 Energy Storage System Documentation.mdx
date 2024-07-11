@@ -299,28 +299,11 @@ The following code is designed to manage the battery operations using an Arduino
 
 2. **Setup Function**:
 
-   - Initializes the serial communication and waits for the port to open.
-   - Calls `initProperties()` to set up the IoT Cloud properties.
-   - Connects to the Arduino IoT Cloud.
-   - Configures the debug message level.
-   - Sets the pin modes for the LEDs and control pins (contactor and precharge).
-
 3. **Loop Function**:
-
-   - Regularly updates the Arduino Cloud.
-   - Contains sample code to manipulate the LED states for debugging purposes.
 
 4. **Contactor Control Change Handler** (`onContactorControlChange`):
 
-   - When `contactor_control` is enabled:
-     - Activates the precharge control and waits for 5 seconds.
-     - Enables the contactor and deactivates the precharge control after a short delay.
-   - When `contactor_control` is disabled:
-     - Deactivates both the precharge and contactor controls.
-
 5. **Precharge Control Change Handler** (`onPrechargeControlChange`):
-
-   - Sets the precharge pin based on the `precharge_control` state.
 
 #### Arduino Sketch
 

@@ -295,14 +295,28 @@ The following code is designed to manage the battery operations using an Arduino
 
 #### Description of the Code
 
- 1. **Overview**:
-    This Arduino sketch manages the control of relays and LEDs based on CAN messages received. It also connects the Arduino board to a WiFi network and integrates it with the Arduino IoT Cloud.
+1. **Overview**:
+   This Arduino sketch manages the control of relays and LEDs based on CAN messages received. It also connects the Arduino board to a WiFi network and integrates it with the Arduino IoT Cloud.
+2. **Included Libraries**:
 
- 2. **Included Libraries**:
+- `thingProperties.h`
+- `WiFiNINA.h`
+- `wifi_drv.h`
+- `Servo.h`
+- `mcp_can.h`
+- `SPI.h`
 
- 3. **Pin Definitions**:
+3. **Pin Definitions**:
 
- 4. **CAN Controller Setup**:
+- `contactor_pin`: Pin 2
+- `precharge_pin`: Pin 1
+- `led_green_pin`: Pin 26 (Green LED)
+- `led_red_pin`: Pin 25 (Red LED)
+- `led_blue_pin`: Pin 27 (Blue LED)
+
+4. **CAN Controller Setup**:
+
+- `MCP_CAN CAN0(6)`: Set CS to pin 6
 
  5. **Timing and Retry Intervals**:
 

@@ -355,9 +355,20 @@ The following code is designed to manage the battery operations using an Arduino
 
 10. **Helper Functions**:
 
+- `connectToWiFiAndCloud()`: Connects to WiFi and Arduino IoT Cloud
+- `checkCANMessages()`: Checks for and processes incoming CAN messages
+- `sendCANStatus()`: Sends the current contactor status over CAN
+- `onContactorControlChange()`: Handles changes to the contactor control
+- `onPrechargeControlChange()`: Handles changes to the precharge control
+
 11. **Properties Initialization**:
 
+- `initProperties()`: Initializes IoT Cloud properties for contactor and precharge control
+
 12. **WiFi Credentials**:
+
+- `SSID`: Network SSID
+- `PASS`: Network password
 
 #### Arduino Sketch
 

@@ -310,39 +310,39 @@ The following code is designed to manage the battery operations using an Arduino
 3. **Pin Definitions**:
 
    - `contactor_pin`: Pin 2
-
-- `precharge_pin`: Pin 1
-- `led_green_pin`: Pin 26 (Green LED)
-- `led_red_pin`: Pin 25 (Red LED)
-- `led_blue_pin`: Pin 27 (Blue LED)
+   - `precharge_pin`: Pin 1
+   - `led_green_pin`: Pin 26 (Green LED)
+   - `led_red_pin`: Pin 25 (Red LED)
+   - `led_blue_pin`: Pin 27 (Blue LED)
 
 4. **CAN Controller Setup**:
 
-- `MCP_CAN CAN0(6)`: Set CS to pin 6
+   - `MCP_CAN CAN0(6)`: Set CS to pin 6
 
 5. **Timing and Retry Intervals**:
 
-- `lastConnectAttempt`: Tracks the last WiFi connection attempt time
-- `connectInterval`: Interval for retrying WiFi connection (40000 ms)
-- `lastCloudUpdate`: Tracks the last cloud update time
-- `cloudUpdateInterval`: Interval for updating the cloud (2000 ms)
+   - `lastConnectAttempt`: Tracks the last WiFi connection attempt time
+   - `connectInterval`: Interval for retrying WiFi connection (40000 ms)
+   - `lastCloudUpdate`: Tracks the last cloud update time
+   - `cloudUpdateInterval`: Interval for updating the cloud (2000 ms)
 
 6. **WiFi Connection Attempts**:
 
-- `maxConnectAttempts`: Maximum number of WiFi connection attempts (5)
-- `connectAttempts`: Counter for WiFi connection attempts
+   - `maxConnectAttempts`: Maximum number of WiFi connection attempts (5)
+   - `connectAttempts`: Counter for WiFi connection attempts
 
 7. **Global Variables for CAN Message Handling**:
 
-- `rxId`: Received CAN message ID
-- `len`: Length of the received CAN message
-- `rxBuf`: Buffer for received CAN message data
-- `msgString`: Buffer to hold the message string
+   - `rxId`: Received CAN message ID
+   - `len`: Length of the received CAN message
+   - `rxBuf`: Buffer for received CAN message data
+   - `msgString`: Buffer to hold the message string
 
 8. **Setup Function**:
 
-- Initializes serial communication
-- Initializes properties defined in `thingProperties.h`
+   - Initializes serial communication
+   - Initializes properties defined in `thingProperties.h`
+
 - Sets initial LED states
 - Configures contactor and precharge pins
 - Initializes MCP2515 CAN controller

@@ -330,11 +330,28 @@ The following code is designed to manage the battery operations using an Arduino
 - `maxConnectAttempts`: Maximum number of WiFi connection attempts (5)
 - `connectAttempts`: Counter for WiFi connection attempts
 
- 7. **Global Variables for CAN Message Handling**:
+7. **Global Variables for CAN Message Handling**:
 
- 8. **Setup Function**:
+- `rxId`: Received CAN message ID
+- `len`: Length of the received CAN message
+- `rxBuf`: Buffer for received CAN message data
+- `msgString`: Buffer to hold the message string
 
- 9. **Loop Function**:
+8. **Setup Function**:
+
+- Initializes serial communication
+- Initializes properties defined in `thingProperties.h`
+- Sets initial LED states
+- Configures contactor and precharge pins
+- Initializes MCP2515 CAN controller
+- Attempts to connect to WiFi and Arduino IoT Cloud
+
+9. **Loop Function**:
+
+- Checks WiFi connection status
+- Updates Arduino IoT Cloud if connected
+- Retries WiFi connection if not connected
+- Checks for incoming CAN messages
 
 10. **Helper Functions**:
 

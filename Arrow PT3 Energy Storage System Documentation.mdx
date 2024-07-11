@@ -318,9 +318,17 @@ The following code is designed to manage the battery operations using an Arduino
 
 - `MCP_CAN CAN0(6)`: Set CS to pin 6
 
- 5. **Timing and Retry Intervals**:
+5. **Timing and Retry Intervals**:
 
- 6. **WiFi Connection Attempts**:
+- `lastConnectAttempt`: Tracks the last WiFi connection attempt time
+- `connectInterval`: Interval for retrying WiFi connection (40000 ms)
+- `lastCloudUpdate`: Tracks the last cloud update time
+- `cloudUpdateInterval`: Interval for updating the cloud (2000 ms)
+
+6. **WiFi Connection Attempts**:
+
+- `maxConnectAttempts`: Maximum number of WiFi connection attempts (5)
+- `connectAttempts`: Counter for WiFi connection attempts
 
  7. **Global Variables for CAN Message Handling**:
 

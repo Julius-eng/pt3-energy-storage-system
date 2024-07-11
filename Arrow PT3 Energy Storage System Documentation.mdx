@@ -295,82 +295,81 @@ The following code is designed to manage the battery operations using an Arduino
 
 #### Description of the Code
 
-1. **Overview**:
-   This Arduino sketch manages the control of relays and LEDs based on CAN messages received. It also connects the Arduino board to a WiFi network and integrates it with the Arduino IoT Cloud.
+ 1. **Overview**:
+    This Arduino sketch manages the control of relays and LEDs based on CAN messages received. It also connects the Arduino board to a WiFi network and integrates it with the Arduino IoT Cloud.
 
-2. **Included Libraries**:
+ 2. **Included Libraries**:
 
-   - `thingProperties.h`
-   - `WiFiNINA.h`
-   - `wifi_drv.h`
-   - `Servo.h`
-   - `mcp_can.h`
-   - `SPI.h`
+    - `thingProperties.h`
+    - `WiFiNINA.h`
+    - `wifi_drv.h`
+    - `Servo.h`
+    - `mcp_can.h`
+    - `SPI.h`
 
-3. **Pin Definitions**:
+ 3. **Pin Definitions**:
 
-   - `contactor_pin`: Pin 2
-   - `precharge_pin`: Pin 1
-   - `led_green_pin`: Pin 26 (Green LED)
-   - `led_red_pin`: Pin 25 (Red LED)
-   - `led_blue_pin`: Pin 27 (Blue LED)
+    - `contactor_pin`: Pin 2
+    - `precharge_pin`: Pin 1
+    - `led_green_pin`: Pin 26 (Green LED)
+    - `led_red_pin`: Pin 25 (Red LED)
+    - `led_blue_pin`: Pin 27 (Blue LED)
 
-4. **CAN Controller Setup**:
+ 4. **CAN Controller Setup**:
 
-   - `MCP_CAN CAN0(6)`: Set CS to pin 6
+    - `MCP_CAN CAN0(6)`: Set CS to pin 6
 
-5. **Timing and Retry Intervals**:
+ 5. **Timing and Retry Intervals**:
 
-   - `lastConnectAttempt`: Tracks the last WiFi connection attempt time
-   - `connectInterval`: Interval for retrying WiFi connection (40000 ms)
-   - `lastCloudUpdate`: Tracks the last cloud update time
-   - `cloudUpdateInterval`: Interval for updating the cloud (2000 ms)
+    - `lastConnectAttempt`: Tracks the last WiFi connection attempt time
+    - `connectInterval`: Interval for retrying WiFi connection (40000 ms)
+    - `lastCloudUpdate`: Tracks the last cloud update time
+    - `cloudUpdateInterval`: Interval for updating the cloud (2000 ms)
 
-6. **WiFi Connection Attempts**:
+ 6. **WiFi Connection Attempts**:
 
-   - `maxConnectAttempts`: Maximum number of WiFi connection attempts (5)
-   - `connectAttempts`: Counter for WiFi connection attempts
+    - `maxConnectAttempts`: Maximum number of WiFi connection attempts (5)
+    - `connectAttempts`: Counter for WiFi connection attempts
 
-7. **Global Variables for CAN Message Handling**:
+ 7. **Global Variables for CAN Message Handling**:
 
-   - `rxId`: Received CAN message ID
-   - `len`: Length of the received CAN message
-   - `rxBuf`: Buffer for received CAN message data
-   - `msgString`: Buffer to hold the message string
+    - `rxId`: Received CAN message ID
+    - `len`: Length of the received CAN message
+    - `rxBuf`: Buffer for received CAN message data
+    - `msgString`: Buffer to hold the message string
 
-8. **Setup Function**:
+ 8. **Setup Function**:
 
-   - Initializes serial communication
-   - Initializes properties defined in `thingProperties.h`
+    - Initializes serial communication
+    - Initializes properties defined in `thingProperties.h`
+    - Sets initial LED states
+    - Configures contactor and precharge pins
+    - Initializes MCP2515 CAN controller
+    - Attempts to connect to WiFi and Arduino IoT Cloud
 
-- Sets initial LED states
-- Configures contactor and precharge pins
-- Initializes MCP2515 CAN controller
-- Attempts to connect to WiFi and Arduino IoT Cloud
+ 9. **Loop Function**:
 
-9. **Loop Function**:
-
-- Checks WiFi connection status
-- Updates Arduino IoT Cloud if connected
-- Retries WiFi connection if not connected
-- Checks for incoming CAN messages
+    - Checks WiFi connection status
+    - Updates Arduino IoT Cloud if connected
+    - Retries WiFi connection if not connected
+    - Checks for incoming CAN messages
 
 10. **Helper Functions**:
 
-- `connectToWiFiAndCloud()`: Connects to WiFi and Arduino IoT Cloud
-- `checkCANMessages()`: Checks for and processes incoming CAN messages
-- `sendCANStatus()`: Sends the current contactor status over CAN
-- `onContactorControlChange()`: Handles changes to the contactor control
-- `onPrechargeControlChange()`: Handles changes to the precharge control
+    - `connectToWiFiAndCloud()`: Connects to WiFi and Arduino IoT Cloud
+    - `checkCANMessages()`: Checks for and processes incoming CAN messages
+    - `sendCANStatus()`: Sends the current contactor status over CAN
+    - `onContactorControlChange()`: Handles changes to the contactor control
+    - `onPrechargeControlChange()`: Handles changes to the precharge control
 
 11. **Properties Initialization**:
 
-- `initProperties()`: Initializes IoT Cloud properties for contactor and precharge control
+    - `initProperties()`: Initializes IoT Cloud properties for contactor and precharge control
 
 12. **WiFi Credentials**:
 
-- `SSID`: Network SSID
-- `PASS`: Network password
+    - `SSID`: Network SSID
+    - `PASS`: Network password
 
 #### Arduino Sketch
 
